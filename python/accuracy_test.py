@@ -78,8 +78,6 @@ def MSE2_loss(predX,predY,predZ,realX,realY,realZ):
         sum_error+= np.linalg.norm(predX[i]-realX[i])+np.linalg.norm(predY[i]-realY[i])+np.linalg.norm(predZ[i]-realZ[i])
         sum_norm+=np.linalg.norm(realX[i])+np.linalg.norm(realY[i])+np.linalg.norm(realZ[i])
 
-
-
     return sum_error/sum_norm
 
 @timeit
@@ -121,21 +119,21 @@ if __name__ == "__main__":
     key20 = trans_value(open_key(folderpath+keyname1))
     key30 = trans_value(open_key(folderpath+keyname2))
     key60 = trans_value(open_key(folderpath+keyname3))
-    # valueX = open_file(folderpath+filename2)
-    # valueY = open_file(folderpath+filename3)
-    # valueZ = open_file(folderpath+filename4)
+    valueX = open_file(folderpath+filename2)
+    valueY = open_file(folderpath+filename3)
+    valueZ = open_file(folderpath+filename4)
 
-    # lengthX = max(map(len, valueX))
-    # lengthY = max(map(len, valueY))
-    # lengthZ = max(map(len, valueZ))
+    lengthX = max(map(len, valueX))
+    lengthY = max(map(len, valueY))
+    lengthZ = max(map(len, valueZ))
 
-    # valueXd = np.array([xi + [0] * (lengthX - len(xi)) for xi in valueX])
-    # valueYd = np.array([yi + [0] * (lengthY - len(yi)) for yi in valueY])
-    # valueZd = np.array([zi + [0] * (lengthZ - len(zi)) for zi in valueZ])
+    valueXd = np.array([xi + [0] * (lengthX - len(xi)) for xi in valueX])
+    valueYd = np.array([yi + [0] * (lengthY - len(yi)) for yi in valueY])
+    valueZd = np.array([zi + [0] * (lengthZ - len(zi)) for zi in valueZ])
 
-    valueXd=np.load('valueXd.npy').astype(float)
-    valueYd=np.load('valueYd.npy').astype(float)
-    valueZd=np.load('valueZd.npy').astype(float)
+    # valueXd=np.load('valueXd.npy').astype(float)
+    # valueYd=np.load('valueYd.npy').astype(float)
+    # valueZd=np.load('valueZd.npy').astype(float)
 
 
     print("loaded data")

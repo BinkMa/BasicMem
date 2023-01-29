@@ -6,6 +6,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import time
+import torch.nn.functional as F
 
 class mlp(nn.Module):
     def __init__(self, input_dim, hidden_dim, output_dim):
@@ -23,14 +24,19 @@ class autoencoder(nn.Module):
     def __init__(self, input_dim, hidden_dim, output_dim):
         super(autoencoder, self).__init__()
         self.encoder = nn.Sequential(
-            nn.Linear(input_dim, hidden_dim),
+            nn.Linear(input_dim, hidden_dim[0]),
             nn.ReLU(True),
-            nn.Linear(hidden_dim, output_dim),
+            nn.Linear(hidden_dim[0], hidden_dim[1]),
+            nn.ReLU(True),
+
+            nn.Linear( hidden_dim[1], output_dim),
         )
         self.decoder = nn.Sequential(
-            nn.Linear(output_dim, hidden_dim),
+            nn.Linear(output_dim, hidden_dim[1]),
             nn.ReLU(True),
-            nn.Linear(hidden_dim, input_dim),
+            nn.Linear(hidden_dim[1], hidden_dim[0]),
+            nn.ReLU(True),
+            nn.Linear(hidden_dim[0], input_dim),
         )
 
     def forward(self, x):
@@ -38,6 +44,33 @@ class autoencoder(nn.Module):
         x = self.decoder(e)
         return e,x
 
+
+class DeepAutoencoder(nn.Module):
+    def __init__(self, input_dim, output_dim, hidden_dim):
+        super(DeepAutoencoder, self).__init__()
+        self.encoder = nn.Sequential(
+            nn.Linear(input_dim, hidden_dim[0]),
+            nn.ReLU(True),
+            nn.Linear(hidden_dim[0], hidden_dim[1]),
+            nn.ReLU(True),
+            nn.Linear(hidden_dim[1], hidden_dim[2]),
+            nn.ReLU(True),
+            nn.Linear(hidden_dim[2], output_dim),
+        )
+        self.decoder = nn.Sequential(
+            nn.Linear(output_dim, hidden_dim[2]),
+            nn.ReLU(True),
+            nn.Linear(hidden_dim[2], hidden_dim[1]),
+            nn.ReLU(True),
+            nn.Linear(hidden_dim[1], hidden_dim[0]),
+            nn.ReLU(True),
+            nn.Linear(hidden_dim[0], input_dim),
+        )
+
+    def forward(self, x):
+        e = self.encoder(x)
+        x = self.decoder(e)
+        return e,x
 
 def trans_data(distances):
     new_distances = []
@@ -71,7 +104,9 @@ class train_encoder():
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     def train(self,X):
         N,dim_in= X.shape
-        model= autoencoder(dim_in,10,1).to(self.device)
+
+        model= autoencoder(dim_in,[10,5],1).to(self.device)
+
         criterion = nn.MSELoss()
         optimizer = torch.optim.Adam(model.parameters(), lr=1e-3, weight_decay=1e-5)
         for epoch in range(self.epoch):
@@ -104,7 +139,7 @@ if __name__ == '__main__':
     # valueY= open_file(filename3)
     # valueZ= open_file(filename4)
 
-    input = np.array(new_distances).reshape(-1, 60)
+    input = np.array(new_distances).reshape(-1, 90)
     input = input
     input = torch.from_numpy(input)
     input = input.to(torch.float32)
@@ -114,7 +149,7 @@ if __name__ == '__main__':
 
     print(embedding.shape)
     embedding=embedding.reshape(-1,2)
-    with open("embedding60.txt",'w') as f:
+    with open("embedding90_2.txt",'w') as f:
         for row in embedding:
             for item in row:
                 f.write(str(item))

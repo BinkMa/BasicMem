@@ -109,16 +109,23 @@ if __name__ == "__main__":
     filename3 = 'valueY.txt'
     filename4 = 'valueZ.txt'
 
-    keyname1='embedding20.txt'
-    keyname2='embedding30.txt'
-    keyname3='embedding60.txt'
+    # keyname1='embedding20.txt'
+    # keyname2='embedding30.txt'
+    # keyname3='embedding60.txt'
+    keyname4='embedding120.txt'
 
 
     distances = open_file(folderpath+filename1)
     new_distances = trans_data(distances)
-    key20 = trans_value(open_key(folderpath+keyname1))
-    key30 = trans_value(open_key(folderpath+keyname2))
-    key60 = trans_value(open_key(folderpath+keyname3))
+
+    # key20 = trans_value(open_key(folderpath+keyname1))
+    # key30 = trans_value(open_key(folderpath+keyname2))
+    # key60 = trans_value(open_key(folderpath+keyname3))
+    # key90 = trans_value(open_key(folderpath+keyname4))
+    key180 = trans_value(open_key(folderpath+keyname4))
+
+
+
     valueX = open_file(folderpath+filename2)
     valueY = open_file(folderpath+filename3)
     valueZ = open_file(folderpath+filename4)
@@ -127,9 +134,9 @@ if __name__ == "__main__":
     lengthY = max(map(len, valueY))
     lengthZ = max(map(len, valueZ))
 
-    valueXd = np.array([xi + [0] * (lengthX - len(xi)) for xi in valueX])
-    valueYd = np.array([yi + [0] * (lengthY - len(yi)) for yi in valueY])
-    valueZd = np.array([zi + [0] * (lengthZ - len(zi)) for zi in valueZ])
+    valueXd = np.array([xi + [0] * (lengthX - len(xi)) for xi in valueX]).astype(float)
+    valueYd = np.array([yi + [0] * (lengthY - len(yi)) for yi in valueY]).astype(float)
+    valueZd = np.array([zi + [0] * (lengthZ - len(zi)) for zi in valueZ]).astype(float)
 
     # valueXd=np.load('valueXd.npy').astype(float)
     # valueYd=np.load('valueYd.npy').astype(float)
@@ -139,9 +146,9 @@ if __name__ == "__main__":
     print("loaded data")
 
     # new_distances = np.array(new_distances).astype('float32')
-    key_table = np.array(new_distances).astype('float32')
+    key_table = np.array(key180).astype('float32')
 
-    cutratio=0.95
+    cutratio=0.9
 
     cutoff= round(len(key_table)*cutratio)
     key_train=key_table[:cutoff]
